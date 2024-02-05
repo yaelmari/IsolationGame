@@ -38,8 +38,8 @@ def play_with_minimax():
 def play_with_alpha_beta():
     player_1 = player_agent(alpha_beta_isolation.alphabeta_max)
     player_2 = player_agent(alpha_beta_isolation.alphabeta_min)
-    grid = np.zeros((4, 4), dtype=int)
-    init_state = game_state(grid, (0, 0), (3, 3), 1)
+    grid = np.zeros((3, 3), dtype=int)
+    init_state = game_state(grid, (0, 0), (2, 2), 1)
     play_isolation(player_1, player_2, init_state)
 
 
@@ -77,7 +77,7 @@ def play_with_advanced_heuristics():
 
 
 if __name__ == '__main__':
-    play_with_minimax()
-    # play_with_alpha_beta()
+    # play_with_minimax()
+    play_with_alpha_beta()
     # play_with_heuristics()
     # play_with_advanced_heuristics()
