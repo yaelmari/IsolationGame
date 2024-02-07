@@ -3,6 +3,7 @@ import minimax_isolation
 import alpha_beta_isolation, heuristic_alpha_beta_isolation, heuristics
 from game_state import game_state
 from player_agent import player_agent, player_agent_heuristics
+from time import time
 
 
 def print_current_state(curr_state, player_turn):
@@ -14,9 +15,9 @@ def print_current_state(curr_state, player_turn):
 
 def play_isolation(player_1, player_2, init_state):
     players = {1: player_1, 2: player_2}
-    curr_player = player_1
-    player_turn = 1
     curr_state = init_state
+    player_turn = curr_state.get_curr_player()
+    curr_player = players[player_turn]
     print(f"start board is:\n{curr_state.get_grid()}")
     while not curr_state.is_terminal():
         chosen_move = curr_player.get_next_move(curr_state)
@@ -38,14 +39,14 @@ def play_with_minimax():
 def play_with_alpha_beta():
     player_1 = player_agent(alpha_beta_isolation.alphabeta_max)
     player_2 = player_agent(alpha_beta_isolation.alphabeta_min)
-    grid = np.zeros((3, 3), dtype=int)
-    init_state = game_state(grid, (0, 0), (2, 2), 1)
+    grid = np.zeros((4, 4), dtype=int)
+    init_state = game_state(grid, (0, 0), (3, 3), 1)
     play_isolation(player_1, player_2, init_state)
 
 
 def play_with_heuristics():
-    depth_player_1 = 6
-    depth_player_2 = 6
+    depth_player_1 = 3
+    depth_player_2 = 3
 
     # try different depths, you can change the depth numbers, board size and locations
     # depth_player_1 = 6
@@ -58,8 +59,8 @@ def play_with_heuristics():
                                        depth_player_1)
     player_2 = player_agent_heuristics(heuristic_alpha_beta_isolation.alphabeta_min_h, heuristics.base_heuristic,
                                        depth_player_2)
-    grid = np.zeros((6, 6), dtype=int)
-    init_state = game_state(grid, (0, 0), (3, 3), 1)
+    grid = np.zeros((7, 7), dtype=int)
+    init_state = game_state(grid, (1, 3), (4, 6), 1)
     play_isolation(player_1, player_2, init_state)
 
 
@@ -77,7 +78,10 @@ def play_with_advanced_heuristics():
 
 
 if __name__ == '__main__':
+    start = time()
     # play_with_minimax()
     play_with_alpha_beta()
     # play_with_heuristics()
+    end = time()
+    print(f"the time is: {end - start} ms")
     # play_with_advanced_heuristics()

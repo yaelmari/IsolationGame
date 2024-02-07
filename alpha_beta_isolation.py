@@ -2,13 +2,14 @@ import math
 
 
 class AlphaBetaNode:
-    def __init__(self, v, a, b, parent, game_state):
+    def __init__(self, v, a, b, parent, game_state, create_children=True):
         self.parent = parent
         self.v = v
         self.a = a
         self.b = b
         self.game_state = game_state
-        self.children = game_state.get_moves()
+        if create_children:
+            self.children = game_state.get_moves()
         self.curr_child = 0
         self.best_child = None
 
@@ -36,6 +37,7 @@ class AlphaBetaNode:
         if am_i_max:
             if new_v > self.v:
                 self.v = new_v
+
         else:
             if new_v < self.v:
                 self.v = new_v
@@ -54,7 +56,7 @@ class AlphaBetaNode:
             else:
                 self.parent.update_v_in_the_parent(not am_i_max)
 
-    def get_next_child(self, am_i_max):
+    def get_next_child(self, am_i_max, create_children=True):
         # Check if there are available children
         if self.curr_child < len(self.children):
             self.curr_child += 1
@@ -63,7 +65,7 @@ class AlphaBetaNode:
             else:
                 v = -math.inf
             curr_move = self.children[self.curr_child - 1]
-            self.children[self.curr_child - 1] = AlphaBetaNode(v, self.a, self.b, self, curr_move)
+            self.children[self.curr_child - 1] = AlphaBetaNode(v, self.a, self.b, self, curr_move, create_children)
             return self.children[self.curr_child - 1]
         return None
 
@@ -75,9 +77,10 @@ def alphabeta_max(current_game):
     global root
     if root is None:
         root = AlphaBetaNode(-math.inf, -math.inf, math.inf, None, current_game)  # (v, a, b, parent, gameState)
-    maximin(root)
+        maximin(root)
     parents_v = root.v
     root = root.best_child
+    root.parent = None
     return parents_v, root.game_state
 
 
@@ -85,9 +88,10 @@ def alphabeta_min(current_game):
     global root
     if root is None:
         root = AlphaBetaNode(math.inf, -math.inf, math.inf, None, current_game)  # (v, a, b, parent, gameState)
-    minimax(root)
+        minimax(root)
     parents_v = root.v
     root = root.best_child
+    root.parent = None
     return parents_v, root.game_state
 
 
@@ -95,7 +99,6 @@ def maximin(current_node):
     if current_node.game_state.is_terminal():
         score = current_node.game_state.get_score()
         current_node.update_my_v(score, True)
-        current_node.update_b()
         return
 
     move = current_node.get_next_child(True)
@@ -112,7 +115,6 @@ def minimax(current_node):
     if current_node.game_state.is_terminal():
         score = current_node.game_state.get_score()
         current_node.update_my_v(score, False)
-        current_node.update_a()
         return
 
     move = current_node.get_next_child(False)
