@@ -48,18 +48,21 @@ def maximin(current_node, depth):
         return
     if depth == 0:
         h1 = h(current_node)
-        current_node.update_my_v(h1, True)
+        if current_node.update_my_v(h1, True):
+            best = current_node
         current_node.update_a()
-        return
-
+        return current_node.v, None
+    best = None
     move = current_node.get_next_child(True, depth > 1)
     while move is not None:
         minimax(move, depth - 1)
-        current_node.update_v_as_max()
+        if current_node.update_v_as_max():
+            best = current_node
         current_node.update_a()
         if current_node.should_we_prun():
-            return
+            return current_node.v, None
         move = current_node.get_next_child(True, depth > 1)
+    return current_node.v, best
 
 
 def minimax(current_node, depth):
@@ -68,18 +71,21 @@ def minimax(current_node, depth):
         score = current_node.game_state.get_score()
         current_node.update_my_v(score, False)
         current_node.update_b()
-        return
+        return current_node.v, None
     if depth == 0:
         h1 = h(current_node)
-        current_node.update_my_v(h1, False)
+        if current_node.update_my_v(h1, False):
+            best = current_node
         current_node.update_b()
-        return
-
+        return current_node.v, None
+    best = None
     move = current_node.get_next_child(False, depth > 1)
     while move is not None:
         maximin(move, depth - 1)
-        current_node.update_v_as_min()
+        if current_node.update_v_as_min():
+            best = current_node
         current_node.update_b()
         if current_node.should_we_prun():
-            return
+            return current_node.v, None
         move = current_node.get_next_child(False, depth > 1)
+    return current_node.v, best

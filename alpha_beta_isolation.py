@@ -7,6 +7,10 @@ class AlphaBetaNode:
         self.v = v
         self.a = a
         self.b = b
+        if parent is None:
+            self.depth = 0
+        else:
+            self.depth = parent.depth + 1
         self.game_state = game_state
         if create_children:
             self.children = game_state.get_moves()
@@ -25,6 +29,8 @@ class AlphaBetaNode:
         if new_v > self.v:  # curr child is a AlphaBetaNode
             self.best_child = child
             self.v = new_v
+            return True
+        return False
 
     def update_v_as_min(self):
         child = self.children[self.curr_child - 1]
@@ -32,6 +38,8 @@ class AlphaBetaNode:
         if new_v < self.v:
             self.best_child = child
             self.v = new_v
+            return True
+        return False
 
     def update_my_v(self, new_v, am_i_max):
         if am_i_max:
@@ -100,15 +108,17 @@ def maximin(current_node):
         score = current_node.game_state.get_score()
         current_node.update_my_v(score, True)
         return
-
+    best = None
     move = current_node.get_next_child(True)
     while move is not None:
         minimax(move)
-        current_node.update_v_as_max()
+        if current_node.update_v_as_max():
+            best = current_node
         current_node.update_a()
         if current_node.should_we_prun():
-            return
+            return current_node.v, None
         move = current_node.get_next_child(True)
+    return current_node.v, best
 
 
 def minimax(current_node):
@@ -116,12 +126,15 @@ def minimax(current_node):
         score = current_node.game_state.get_score()
         current_node.update_my_v(score, False)
         return
-
+    best = None
     move = current_node.get_next_child(False)
     while move is not None:
         maximin(move)
-        current_node.update_v_as_min()
+        if current_node.update_v_as_min():
+            best = current_node
+
         current_node.update_b()
         if current_node.should_we_prun():
-            return
+            return current_node.v, None
         move = current_node.get_next_child(False)
+    return current_node.v, best
