@@ -23,7 +23,7 @@ def play_isolation(player_1, player_2, init_state):
     while not curr_state.is_terminal():
         chosen_move = curr_player.get_next_move(curr_state)
         curr_state.apply_move(chosen_move)
-        print_current_state(curr_state, player_turn)
+        # print_current_state(curr_state, player_turn)
         print(f"turn {i}")
         i+=1
         player_turn = curr_state.get_curr_player()
@@ -34,8 +34,8 @@ def play_isolation(player_1, player_2, init_state):
 def play_with_minimax():
     player_1 = player_agent(minimax_isolation.maximin)
     player_2 = player_agent(minimax_isolation.minimax)
-    grid = np.zeros((4, 4), dtype=int)
-    init_state = game_state(grid, (0, 1), (2, 1), 1)
+    grid = np.zeros((3, 3), dtype=int)
+    init_state = game_state(grid, (0, 0), (2, 2), 1)
     play_isolation(player_1, player_2, init_state)
 
 
@@ -89,11 +89,12 @@ if __name__ == '__main__':
     # play_with_minimax()
     # play_with_alpha_beta()
     # play_with_heuristics()
-    end = time()
-
-    print(f"the time is: {end - start} ms")
+    # end = time()
+    #
+    # print(f"the time is: {end - start} ms")
     start1 = time()
 
+    # play_with_heuristics()
     play_with_advanced_heuristics()
     end1 = time()
 
